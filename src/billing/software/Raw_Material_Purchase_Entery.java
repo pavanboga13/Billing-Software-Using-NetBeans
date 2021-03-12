@@ -293,7 +293,7 @@ Date d;
         jLabel21.setText("Prices");
         jLabel21.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        jLabel5.setFont(new java.awt.Font("Times New Roman", 1, 48)); // NOI18N
+        jLabel5.setFont(new java.awt.Font("Times New Roman", 0, 48)); // NOI18N
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel5.setText("Raw Material Purchase Entery");
         jLabel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
@@ -467,42 +467,6 @@ Date d;
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-
-        try{
-            String pur_bill_no, wf, ol, su, sa, date, smt;
-
-            wf = jTextField1.getText().trim();
-            ol = jTextField2.getText().trim();
-            su = jTextField3.getText().trim();
-            sa = jTextField4.getText().trim();
-            pur_bill_no = jLabel2.getText().trim();
-            date = jLabel3.getText().trim();
-
-            if(wf.length() == 0 || ol.length() == 0 || su.length() == 0 || sa.length() == 0 || pur_bill_no.length() == 0 || date.length() == 0)
-            {
-                JOptionPane.showMessageDialog(null,"Enter all information","Data Missing",JOptionPane.ERROR_MESSAGE);
-            }
-            else
-            {
-                stat = (Statement) cn.createStatement();
-                smt = "insert into raw_m_p_e values('"+pur_bill_no+"', '"+wf+"', '"+ol+"', '"+su+"', '"+sa+"', '"+date+"')";
-                stat.executeUpdate(smt);
-
-                stat = (Statement) cn.createStatement();
-                smt = "update raw_m_p_e_demo set wf = wf + "+wf+", ol = ol + "+ol+", su = su + "+su+", sa = sa + "+sa+" where demo_id = 1";
-                stat.executeUpdate(smt);
-
-                JOptionPane.showMessageDialog(null, "Data is add Succesfully...");
-
-                this.dispose();
-                Main_page mmpp = new Main_page();
-                mmpp.setVisible(true);
-            }
-        }
-        catch(Exception e){
-            JOptionPane.showMessageDialog(null, e);
-        }
-
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -521,22 +485,6 @@ Date d;
     }//GEN-LAST:event_jTextField15KeyReleased
 
     private void jTextField2KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField2KeyReleased
-        char z=evt.getKeyChar();
-        String x;
-        if(evt.getKeyCode()==10||evt.getKeyCode()==8)
-        {
-        }
-        else if(z>='0'&&z<='9')
-        {
-            x=jTextField2.getText();
-            jTextField2.setText(x);
-        }
-        else
-        {
-            JOptionPane.showMessageDialog(null,"ONLY NUMBER INPUT");
-            jTextField2.setText("");
-        }
-
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField2KeyReleased
 
@@ -565,21 +513,6 @@ Date d;
     }//GEN-LAST:event_jTextField7KeyReleased
 
     private void jTextField4KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField4KeyReleased
-        char z=evt.getKeyChar();
-        String x;
-        if(evt.getKeyCode()==10||evt.getKeyCode()==8)
-        {
-        }
-        else if(z>='0'&&z<='9')
-        {
-            x=jTextField4.getText();
-            jTextField4.setText(x);
-        }
-        else
-        {
-            JOptionPane.showMessageDialog(null,"ONLY NUMBER INPUT");
-            jTextField4.setText("");
-        }
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField4KeyReleased
 
@@ -588,41 +521,10 @@ Date d;
     }//GEN-LAST:event_jTextField13KeyReleased
 
     private void jTextField3KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField3KeyReleased
-        char z=evt.getKeyChar();
-        String x;
-        if(evt.getKeyCode()==10||evt.getKeyCode()==8)
-        {
-        }
-        else if(z>='0'&&z<='9')
-        {
-            x=jTextField3.getText();
-            jTextField3.setText(x);
-        }
-        else
-        {
-            JOptionPane.showMessageDialog(null,"ONLY NUMBER INPUT");
-            jTextField3.setText("");
-        }
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField3KeyReleased
 
     private void jTextField1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyReleased
-        char z=evt.getKeyChar();
-        String x;
-        if(evt.getKeyCode()==10||evt.getKeyCode()==8)
-        {
-        }
-        else if(z>='0'&&z<='9')
-        {
-            x=jTextField1.getText();
-            jTextField1.setText(x);
-        }
-        else
-        {
-            JOptionPane.showMessageDialog(null,"ONLY NUMBER INPUT");
-            jTextField1.setText("");
-        }
-
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField1KeyReleased
 
@@ -631,42 +533,6 @@ Date d;
     }//GEN-LAST:event_jTextField12KeyReleased
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-
-        try{
-            String pur_bill_no, wf, ol, su, sa, date, smt;
-
-            wf = jTextField1.getText().trim();
-            ol = jTextField2.getText().trim();
-            su = jTextField3.getText().trim();
-            sa = jTextField4.getText().trim();
-            pur_bill_no = jLabel2.getText().trim();
-            date = jLabel3.getText().trim();
-
-            if(wf.length() == 0 || ol.length() == 0 || su.length() == 0 || sa.length() == 0 || pur_bill_no.length() == 0 || date.length() == 0)
-            {
-                JOptionPane.showMessageDialog(null,"Enter all information","Data Missing",JOptionPane.ERROR_MESSAGE);
-            }
-            else
-            {
-                stat = (Statement) cn.createStatement();
-                smt = "insert into raw_m_p_e values('"+pur_bill_no+"', '"+wf+"', '"+ol+"', '"+su+"', '"+sa+"', '"+date+"')";
-                stat.executeUpdate(smt);
-
-                stat = (Statement) cn.createStatement();
-                smt = "update raw_m_p_e_demo set wf = wf + "+wf+", ol = ol + "+ol+", su = su + "+su+", sa = sa + "+sa+" where demo_id = 1";
-                stat.executeUpdate(smt);
-
-                JOptionPane.showMessageDialog(null, "Data is add Succesfully...");
-
-                this.dispose();
-                Raw_M_P_E rmpee = new Raw_M_P_E();
-                rmpee.setVisible(true);
-            }
-        }
-        catch(Exception e){
-            JOptionPane.showMessageDialog(null, e);
-        }
-
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -679,13 +545,6 @@ Date d;
     }//GEN-LAST:event_jTextField10KeyReleased
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        try {
-            this.dispose();
-            new purchase_list().setVisible(true);
-            // TODO add your handling code here:
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(Raw_M_P_E.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }//GEN-LAST:event_jButton5ActionPerformed
 
     /**
