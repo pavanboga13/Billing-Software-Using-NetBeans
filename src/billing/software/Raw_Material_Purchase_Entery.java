@@ -21,7 +21,7 @@ Date d;
         initComponents();
         
         d = new java.util.Date();
-        jLabel3.setText(new SimpleDateFormat("dd-mm-yyyy").format(d));
+        jLabel3.setText(new SimpleDateFormat("yyyy-MM-dd").format(d));
         
     }
 
