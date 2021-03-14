@@ -252,6 +252,7 @@ public class Customer_Entry extends javax.swing.JFrame {
         jLabel11.setText("Product Name :");
         jLabel11.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
+        jTextField4.setEditable(false);
         jTextField4.setFont(new java.awt.Font("Times New Roman", 0, 24)); // NOI18N
 
         jLabel12.setFont(new java.awt.Font("Times New Roman", 0, 24)); // NOI18N
