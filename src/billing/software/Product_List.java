@@ -5,17 +5,72 @@
  */
 package billing.software;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author OM
  */
 public class Product_List extends javax.swing.JFrame {
-
+    Connection cn;
+    Statement stat;
+    ResultSet rs;
+    Date d;
+    PreparedStatement pst;
     /**
      * Creates new form Product_List
      */
     public Product_List() {
         initComponents();
+        
+        d = new java.util.Date();
+        jLabel3.setText(new SimpleDateFormat("yyyy-MM-dd").format(d));
+        
+       try{
+                Class.forName("com.mysql.jdbc.Driver");
+                cn = DriverManager.getConnection("jdbc:mysql://localhost:3306/billing_system","root","");
+                stat = cn.createStatement();
+            
+                String sql = "select * from product_entry ";
+                rs = stat.executeQuery(sql);
+
+                while(rs.next())
+                {
+                    
+                    
+                    String pro_name = rs.getString("pro_name");
+                    String wf = rs.getString("wf");
+                    String ol = rs.getString("ol");
+                    String yt = rs.getString("yt");
+                    String cp = rs.getString("cp");
+                    String sg = rs.getString("sg");
+                    String sa = rs.getString("sa");
+                    String da = rs.getString("da");
+                    String br = rs.getString("br");
+                    String wt = rs.getString("wt");
+
+                    String tdDate[] = {pro_name, wf, ol, yt, cp, sg, sa, da, br, wt};
+                    DefaultTableModel telModel = (DefaultTableModel) jTable1.getModel();
+                    telModel.addRow(tdDate);                
+                }
+                
+                
+                
+                
+        }
+        catch(Exception e)
+        {
+            JOptionPane.showMessageDialog(null, e);
+        }
+        
     }
 
     /**
@@ -60,19 +115,10 @@ public class Product_List extends javax.swing.JFrame {
         jTable1.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null}
+
             },
             new String [] {
-                "Product Name", "Wheat Flour", "Sugar", "Oil", "Salt", "Yeast", "Dalda", "Calcium Powder", "Bread In", "Water"
+                "Product Name", "Wheat Flour", "Oil", "Yeast", "Sugar", "Calcium Powder", "Salt", "Dalda", "Bread In", "Water"
             }
         ) {
             Class[] types = new Class [] {

@@ -5,17 +5,79 @@
  */
 package billing.software;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author OM
  */
 public class Customer_Entry extends javax.swing.JFrame {
-
+    Connection cn;
+    Statement stat;
+    ResultSet rs;
+    Date d;
+    PreparedStatement pst;
     /**
      * Creates new form Customer_Entry
      */
     public Customer_Entry() {
         initComponents();
+        
+        d = new java.util.Date();
+        jLabel9.setText(new SimpleDateFormat("yyyy-MM-dd").format(d));
+        
+        
+                try{
+                        Class.forName("com.mysql.jdbc.Driver");
+                        cn = DriverManager.getConnection("jdbc:mysql://localhost:3306/billing_system","root","");
+                        stat = cn.createStatement();
+        
+            String sql = "select pro_name from product_entry";
+            rs = stat.executeQuery(sql);
+            
+            while(rs.next())
+            {
+                String proname = rs.getString("pro_name");
+                
+                String tdDate[] = {proname};
+                DefaultTableModel telModel = (DefaultTableModel) jTable1.getModel();
+                telModel.addRow(tdDate);
+            }
+        
+            stat = cn.createStatement();
+            rs = stat.executeQuery("select customer_id from customer_entry order by customer_id");
+            int v=0;
+            if(rs.first())
+            {
+            rs.last();
+            v=rs.getInt(1);
+            v++;
+            jLabel3.setText(""+v);
+            }
+            else
+            {
+                jLabel3.setText("1");
+            }
+        
+            
+            
+        }
+        catch(Exception e)
+        {
+            JOptionPane.showMessageDialog(null, e);
+        }
+                
+        
+        
+        
     }
 
     /**
@@ -187,16 +249,7 @@ public class Customer_Entry extends javax.swing.JFrame {
         jTable1.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null},
-                {null},
-                {null},
-                {null},
-                {null},
-                {null},
-                {null},
-                {null},
-                {null},
-                {null}
+
             },
             new String [] {
                 "Product Name"
@@ -205,12 +258,24 @@ public class Customer_Entry extends javax.swing.JFrame {
             Class[] types = new Class [] {
                 java.lang.String.class
             };
+            boolean[] canEdit = new boolean [] {
+                false
+            };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
             }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
         });
         jTable1.setRowHeight(30);
+        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable1MouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(jTable1);
 
         jLabel10.setFont(new java.awt.Font("Times New Roman", 0, 24)); // NOI18N
@@ -221,16 +286,7 @@ public class Customer_Entry extends javax.swing.JFrame {
         jTable2.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null}
+
             },
             new String [] {
                 "Selected Product", "Quantity"
@@ -442,6 +498,65 @@ public class Customer_Entry extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
+    try
+    {
+        String query1, query2;
+        String customer_id, customer_name, shop_name, shop_address, customer_phone, date, demo_check;
+        
+        customer_id = jLabel3.getText().trim();
+        customer_name = jTextField1.getText().trim();
+        shop_name = jTextField3.getText().trim();
+        shop_address = jTextArea1.getText().trim();
+        customer_phone = jTextField2.getText().trim();
+        date = jLabel9.getText().trim();
+        demo_check = jTextField5.getText().trim();
+        
+        if(customer_id.length() == 0 || customer_name.length() == 0 || shop_name.length() == 0 || shop_address.length() == 0 || customer_phone.length() == 0 || date.length() == 0 || demo_check.length() > 0)
+        {
+            JOptionPane.showMessageDialog(null, "Enter Proper Date", "Date Error", JOptionPane.ERROR_MESSAGE);
+        }
+        else        
+        {
+            stat = cn.createStatement();
+            query1 = "insert into customer_entry values('"+customer_id+"', '"+customer_name+"', '"+shop_name+"', '"+shop_address+"', '"+customer_phone+"', '"+date+"')";
+            stat.executeUpdate(query1);
+            
+            stat = cn.createStatement();
+            query2 = "insert into customer_product values(?, ?, ?, ?)";
+            pst = cn.prepareStatement(query2);
+
+            String pname = "";
+            String pquan = "";
+            
+            for(int i = 0; i<jTable2.getRowCount(); i++)
+            {
+                pname = (String) jTable2.getValueAt(i, 0);
+                pquan = (String) jTable2.getValueAt(i, 1);
+                
+                
+                pst.setString(1, customer_id);
+                pst.setString(2, customer_name);
+                pst.setString(3, pname);
+                pst.setString(4, pquan);
+                
+                pst.executeUpdate();
+            }
+            
+            JOptionPane.showMessageDialog(this, "Customer Added Succesfully");
+            this.dispose();
+            new Customer_Entry().setVisible(true);
+        }
+        
+                
+    }
+    catch(Exception e)
+    {
+        
+    }
+        
+        
+        
+        
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -472,12 +587,35 @@ public class Customer_Entry extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+
+        DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
+        model.addRow(new Object[]{jTextField4.getText(), jTextField5.getText()});
+        
+        jTextField4.setText("");
+        jTextField5.setText("");
+        
+
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+
+        DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
+        
+        int SelectedRowIndex = jTable2.getSelectedRow();
+        model.removeRow(SelectedRowIndex);
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton8ActionPerformed
+
+    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
+
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        int selectedRowIndex = jTable1.getSelectedRow();
+        
+        jTextField4.setText(model.getValueAt(selectedRowIndex, 0).toString());
+
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTable1MouseClicked
 
     /**
      * @param args the command line arguments

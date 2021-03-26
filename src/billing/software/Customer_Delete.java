@@ -5,17 +5,45 @@
  */
 package billing.software;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.Date;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author OM
  */
 public class Customer_Delete extends javax.swing.JFrame {
-
+    Connection cn;
+    Statement stat;
+    ResultSet rs;
+    Date d;
+    PreparedStatement pst;
     /**
      * Creates new form Customer_Delete
      */
     public Customer_Delete() {
         initComponents();
+        
+        try{
+                Class.forName("com.mysql.jdbc.Driver");
+                cn = DriverManager.getConnection("jdbc:mysql://localhost:3306/billing_system","root","");
+                stat = cn.createStatement();
+            
+        }
+        catch(Exception e)
+        {
+            JOptionPane.showMessageDialog(null, e);
+        }
+                
+        
+        
+        
     }
 
     /**
@@ -125,16 +153,7 @@ public class Customer_Delete extends javax.swing.JFrame {
         jTable2.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null}
+
             },
             new String [] {
                 "Selected Product", "Quantity"
@@ -281,7 +300,23 @@ public class Customer_Delete extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField2KeyReleased
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-      
+    try    
+    {   
+        String c_id = jTextField4.getText();
+
+        stat=cn.createStatement();
+        stat.executeUpdate("delete from customer_entry where customer_id="+c_id+"");
+        stat.executeUpdate("delete from customer_product where customer_id="+c_id+"");
+        JOptionPane.showMessageDialog(null,"Customer Deleted Successfully.");
+        
+        this.dispose();
+        new Customer_Entry().setVisible(true);
+        
+    }   
+    catch(Exception e)   
+    {
+        JOptionPane.showMessageDialog(null, e);
+    }    
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
@@ -290,6 +325,59 @@ public class Customer_Delete extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jTextField4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField4ActionPerformed
+        String c_id = jTextField4.getText();
+        try
+        {
+            stat = cn.createStatement();
+            rs = stat.executeQuery("select * from customer_entry where customer_id = '"+c_id+"'");
+            if(rs.next())
+            {
+                jTextField1.setText(rs.getString(2));
+                jTextField3.setText(rs.getString(3));
+                jTextArea1.setText(rs.getString(4));
+                jTextField2.setText(rs.getString(5));
+                jLabel9.setText(rs.getString(6));
+                
+                String sql = "select product_name, product_quan from customer_product where customer_id = '"+c_id+"'";
+                rs = stat.executeQuery(sql);
+
+                while(rs.next())
+                {
+                    String product_name = rs.getString("product_name");
+                    String product_quan = rs.getString("product_quan");
+
+                    String tdDate[] = {product_name, product_quan};
+                    DefaultTableModel telModel = (DefaultTableModel) jTable2.getModel();
+                    telModel.addRow(tdDate);                
+                }
+
+
+            }
+            
+
+                
+            
+            else
+            {
+                JOptionPane.showMessageDialog(null,"Customer ID Invalid?","Customer Not Found",JOptionPane.ERROR_MESSAGE);
+                jTextField4.setText("");
+                jTextField1.setText("");
+                jTextField3.setText("");
+                jTextArea1.setText("");
+                jTextField2.setText("");
+                jLabel9.setText("");
+                
+             
+            }
+        }
+        catch(Exception e)
+        {
+            
+        }
+
+
+
+
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField4ActionPerformed
 

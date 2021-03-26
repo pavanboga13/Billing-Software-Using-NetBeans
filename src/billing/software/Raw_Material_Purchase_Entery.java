@@ -5,23 +5,38 @@
  */
 package billing.software;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.sql.DriverManager;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author OM
  */
 public class Raw_Material_Purchase_Entery extends javax.swing.JFrame {
-Date d;
-    /**
-     * Creates new form Raw_Material_Purchase_Entery
-     */
+        Connection cn;
+        Statement stat;
+        ResultSet rs;
+    Date d;
+
     public Raw_Material_Purchase_Entery() {
         initComponents();
         
         d = new java.util.Date();
         jLabel3.setText(new SimpleDateFormat("yyyy-MM-dd").format(d));
+      
+        
+        
+        
+        
+        
+        
+        
+        
         
     }
 

@@ -5,17 +5,64 @@
  */
 package billing.software;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author OM
  */
 public class Customer_List extends javax.swing.JFrame {
-
+    Connection cn;
+    Statement stat;
+    ResultSet rs;
+    Date d;
+    PreparedStatement pst;
     /**
      * Creates new form Customer_List
      */
     public Customer_List() {
         initComponents();
+        
+        d = new java.util.Date();
+        jLabel9.setText(new SimpleDateFormat("yyyy-MM-dd").format(d));
+        
+        try{
+                Class.forName("com.mysql.jdbc.Driver");
+                cn = DriverManager.getConnection("jdbc:mysql://localhost:3306/billing_system","root","");
+                stat = cn.createStatement();
+                
+                String sql = "select customer_id, shop_name, customer_phone from customer_entry ";
+                rs = stat.executeQuery(sql);
+
+                while(rs.next())
+                {
+                    String customer_id = rs.getString("customer_id");
+                    String shop_name = rs.getString("shop_name");
+                    String customer_phone = rs.getString("customer_phone");
+
+                    String tdDate[] = {customer_id, shop_name, customer_phone};
+                    DefaultTableModel telModel = (DefaultTableModel) jTable2.getModel();
+                    telModel.addRow(tdDate);                
+                }
+
+            
+            
+            
+        }
+        catch(Exception e)
+        {
+            JOptionPane.showMessageDialog(null, e);
+        }
+        
+        
     }
 
     /**
@@ -65,16 +112,7 @@ public class Customer_List extends javax.swing.JFrame {
         jTable2.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+
             },
             new String [] {
                 "Customer ID", "Shop Name", "Phone Number"
@@ -83,9 +121,16 @@ public class Customer_List extends javax.swing.JFrame {
             Class[] types = new Class [] {
                 java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
             }
         });
         jTable2.setRowHeight(30);
@@ -157,16 +202,7 @@ public class Customer_List extends javax.swing.JFrame {
         jTable3.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         jTable3.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null}
+
             },
             new String [] {
                 "Product Name", "Quantity"
@@ -175,9 +211,16 @@ public class Customer_List extends javax.swing.JFrame {
             Class[] types = new Class [] {
                 java.lang.String.class, java.lang.String.class
             };
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
             }
         });
         jTable3.setRowHeight(30);
@@ -201,8 +244,7 @@ public class Customer_List extends javax.swing.JFrame {
                             .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(369, 369, 369)
-                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(31, 31, 31)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -271,6 +313,46 @@ public class Customer_List extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jTextField4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField4ActionPerformed
+        String c_id = jTextField4.getText().trim();
+        try{
+            stat = cn.createStatement();
+            rs = stat.executeQuery("select * from customer_entry where customer_id = '"+c_id+"'");
+            
+            if(rs.next())
+            {
+                jTextField1.setText(rs.getString(2));
+                jTextField3.setText(rs.getString(3));
+                jTextField5.setText(rs.getString(4));
+                jTextField6.setText(rs.getString(5));
+                
+                String sql = "select product_name, product_quan from customer_product where customer_id = '"+c_id+"'";
+                rs = stat.executeQuery(sql);
+
+                while(rs.next())
+                {
+                    String product_name = rs.getString("product_name");
+                    String product_quan = rs.getString("product_quan");
+
+                    String tdDate[] = {product_name, product_quan};
+                    DefaultTableModel telModel = (DefaultTableModel) jTable3.getModel();
+                    telModel.addRow(tdDate);                
+                }
+             }
+            else
+            {
+                JOptionPane.showMessageDialog(null,"Customer ID Invalid?","Customer Not Found",JOptionPane.ERROR_MESSAGE);                
+                jTextField1.setText("");
+                jTextField3.setText("");
+                jTextField5.setText("");
+                jTextField6.setText("");
+            }
+        }
+        catch(Exception e)
+        {
+            JOptionPane.showMessageDialog(null, e);
+        }
+
+
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField4ActionPerformed
 

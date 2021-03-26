@@ -5,17 +5,55 @@
  */
 package billing.software;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author OM
  */
 public class Product_Update extends javax.swing.JFrame {
-
+    Connection cn;
+    Statement stat;
+    ResultSet rs;
+    PreparedStatement pst;
+    Date d;
     /**
      * Creates new form Product_Update
      */
     public Product_Update() {
         initComponents();
+        
+        d =new java.util.Date();
+        jLabel3.setText(new SimpleDateFormat("yyyy-MM-dd").format(d));
+        
+        try{
+            Class.forName("com.mysql.jdbc.Driver");
+            cn = DriverManager.getConnection("jdbc:mysql://localhost:3306/billing_system","root","");
+        
+        
+            String sql = "select * from product_entry";
+            pst = cn.prepareStatement(sql);
+            rs = pst.executeQuery();
+            
+            while(rs.next())
+            {
+                String proname = rs.getString("pro_name");
+                jComboBox1.addItem(proname);
+            }
+        
+        
+        }
+        catch(Exception e)
+        {
+            JOptionPane.showMessageDialog(null, e);
+        }
     }
 
     /**
@@ -190,6 +228,11 @@ public class Product_Update extends javax.swing.JFrame {
 
         jComboBox1.setFont(new java.awt.Font("Times New Roman", 0, 24)); // NOI18N
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "None" }));
+        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -357,9 +400,81 @@ public class Product_Update extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        this.dispose();
-        new Product_Update().setVisible(true);// TODO add your handling code here:
+
+        try{
+            String pro_name, wf, ol, yt, cp, sg, sa, da, br, wt, smt;
+
+            pro_name = jComboBox1.getSelectedItem().toString();
+            wf = jTextField2.getText().trim();
+            ol = jTextField3.getText().trim();
+            yt = jTextField6.getText().trim();
+            cp = jTextField5.getText().trim();
+            sg = jTextField9.getText().trim();
+            sa = jTextField4.getText().trim();
+            da = jTextField7.getText().trim();
+            br = jTextField8.getText().trim();
+            wt = jTextField10.getText().trim();
+                    
+            if(pro_name.length() == 0 || wf.length() == 0 || ol.length() == 0 || yt.length() == 0 || cp.length() == 0 || sg.length() == 0 || sa.length() == 0 || da.length() == 0 || br.length() == 0 || wt.length() == 0)
+            {
+                 JOptionPane.showMessageDialog(null,"Enter all information","Data Missing",JOptionPane.ERROR_MESSAGE);
+            }
+            else
+            {
+                stat = (Statement) cn.createStatement();
+                smt = "update product_entry set wf = "+wf+", ol = "+ol+" , yt = "+yt+", cp = "+cp+", sg = "+sg+", sa = "+sa+", da = "+da+", br = "+br+", wt = "+wt+"  where pro_name = '"+pro_name+"' ";
+                stat.executeUpdate(smt);
+           
+
+                JOptionPane.showMessageDialog(null, "Product Updated Succesfully...");
+                this.dispose();
+                new Product_Update().setVisible(true);
+            }
+        }
+        catch(Exception e)
+        {
+            JOptionPane.showMessageDialog(null, e);
+        }
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+        
+        String name = jComboBox1.getSelectedItem().toString();
+        
+        try
+        {
+            stat = cn.createStatement();
+            rs = stat.executeQuery("select * from product_entry where pro_name = '"+name+"'");
+            if(rs.next())
+            {
+                jTextField2.setText(rs.getString(2));
+                jTextField3.setText(rs.getString(3));
+                jTextField6.setText(rs.getString(4));
+                jTextField5.setText(rs.getString(5));
+                jTextField9.setText(rs.getString(6));
+                jTextField4.setText(rs.getString(7));
+                jTextField7.setText(rs.getString(8));
+                jTextField8.setText(rs.getString(9));                
+                jTextField10.setText(rs.getString(10));
+            }
+            else
+            {
+                jTextField2.setText("");;
+                jTextField3.setText("");
+                jTextField6.setText("");
+                jTextField5.setText("");
+                jTextField9.setText("");
+                jTextField4.setText("");
+                jTextField7.setText("");
+                jTextField8.setText("");
+                jTextField10.setText("");
+            }
+        }
+        catch(Exception e)
+        {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }//GEN-LAST:event_jComboBox1ActionPerformed
 
     /**
      * @param args the command line arguments

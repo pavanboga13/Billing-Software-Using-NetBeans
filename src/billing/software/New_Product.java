@@ -6,14 +6,24 @@
 package billing.software;
 
 import java.awt.Dimension;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author OM
  */
 public class New_Product extends javax.swing.JFrame {
-
+    Date d;
+    Connection cn;
+    Statement stat;
+    ResultSet rs;
     /**
      * Creates new form New_Product
      */
@@ -21,6 +31,23 @@ public class New_Product extends javax.swing.JFrame {
          this.setMaximumSize(new Dimension().getSize());
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         initComponents();
+        
+        d = new java.util.Date();
+        jLabel3.setText(new SimpleDateFormat("yyyy-MM-dd").format(d));
+        
+        try{
+            Class.forName("com.mysql.jdbc.Driver");
+            cn = DriverManager.getConnection("jdbc:mysql://localhost:3306/billing_system","root","");
+            
+        }
+        catch(Exception e)
+        {
+            JOptionPane.showMessageDialog(null, e);
+        }
+        
+        
+        
+        
     }
 
     /**
@@ -288,8 +315,41 @@ public class New_Product extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    try{
+        String pro_name, wf, ol, yt, cp, sg, sa, da, br, wt, date, smt;
+        pro_name = jTextField1.getText().trim();
+        wf = jTextField2.getText().trim();
+        ol = jTextField3.getText().trim();
+        yt = jTextField6.getText().trim();
+        cp = jTextField5.getText().trim();
+        sg = jTextField9.getText().trim();      
+        sa = jTextField4.getText().trim();    
+        da = jTextField7.getText().trim();
+        br = jTextField8.getText().trim();     
+        wt = jTextField10.getText().trim();
+        date = jLabel3.getText().trim();      
+       
+        if(pro_name.length() == 0 || wf.length() == 0 || ol.length() == 0 || yt.length() == 0 || cp.length() == 0 || sg.length() == 0 || sa.length() == 0 || da.length() == 0 || br.length() == 0 || wt.length() == 0 || date.length() == 0)
+        {
+            JOptionPane.showMessageDialog(null,"Enter all information","Data Missing",JOptionPane.ERROR_MESSAGE);
+        }
+        else
+        {
+               stat = (Statement) cn.createStatement();
+                smt = "insert into product_entry values('"+pro_name+"', '"+wf+"', '"+ol+"', '"+yt+"', '"+cp+"', '"+sg+"', '"+sa+"', '"+da+"', '"+br+"', '"+wt+"', '"+date+"')";
+                stat.executeUpdate(smt);
 
+                JOptionPane.showMessageDialog(null, "Product added Succesfully...");
 
+                this.dispose();
+                New_Product mmpp = new New_Product();
+                mmpp.setVisible(true);    
+        }
+    }
+    catch(Exception e)
+    {
+        JOptionPane.showMessageDialog(null, e);
+    }
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed
 

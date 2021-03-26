@@ -197,7 +197,7 @@ public class Main_Page extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         this.dispose();
-        new Raw_Material_Purchase_Entery().setVisible(true);
+        new Raw_Material_Purchase_entery_New().setVisible(true);
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed
 
