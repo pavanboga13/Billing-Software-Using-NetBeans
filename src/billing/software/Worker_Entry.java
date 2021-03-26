@@ -5,6 +5,12 @@
  */
 package billing.software;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.swing.JOptionPane;
 
 /**
@@ -12,12 +18,43 @@ import javax.swing.JOptionPane;
  * @author OM
  */
 public class Worker_Entry extends javax.swing.JFrame {
-
+    Date d;
+    Connection cn;
+    Statement stat;
+    ResultSet rs;
     /**
      * Creates new form Worker_Entry
      */
     public Worker_Entry() {
         initComponents();
+
+        d = new java.util.Date();
+        jLabel9.setText(new SimpleDateFormat("yyyy-MM-dd").format(d));
+        
+        try{
+            Class.forName("com.mysql.jdbc.Driver");
+            cn = DriverManager.getConnection("jdbc:mysql://localhost:3306/billing_system","root","");
+        
+            stat = cn.createStatement();
+            rs = stat.executeQuery("select worker_id from worker_entry order by worker_id");
+            int v=0;
+            if(rs.first())
+            {
+            rs.last();
+            v=rs.getInt(1);
+            v++;
+            jTextField2.setText(""+v);
+            }
+            else
+            {
+                jTextField2.setText("1");
+            }
+        }
+        catch(Exception e)
+        {
+            JOptionPane.showMessageDialog(null, e);
+        }
+
     }
 
     /**
@@ -62,6 +99,7 @@ public class Worker_Entry extends javax.swing.JFrame {
         jLabel2.setText("Worker ID");
         jLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
+        jTextField2.setEditable(false);
         jTextField2.setFont(new java.awt.Font("Times New Roman", 0, 24)); // NOI18N
         jTextField2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -129,11 +167,13 @@ public class Worker_Entry extends javax.swing.JFrame {
         jLabel7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         jComboBox3.setFont(new java.awt.Font("Times New Roman", 0, 24)); // NOI18N
-        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" }));
+        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12" }));
 
         jComboBox2.setFont(new java.awt.Font("Times New Roman", 0, 24)); // NOI18N
+        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" }));
 
         jComboBox4.setFont(new java.awt.Font("Times New Roman", 0, 24)); // NOI18N
+        jComboBox4.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "2021", "2020", "2019", "2018", "2017", "2016", "2015", "2014", "2013", "2012", "2011", "2010" }));
 
         jComboBox1.setFont(new java.awt.Font("Times New Roman", 0, 24)); // NOI18N
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-" }));
@@ -172,6 +212,11 @@ public class Worker_Entry extends javax.swing.JFrame {
         jButton2.setFont(new java.awt.Font("Times New Roman", 0, 24)); // NOI18N
         jButton2.setText("Add");
         jButton2.setBorder(null);
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jButton3.setFont(new java.awt.Font("Times New Roman", 0, 24)); // NOI18N
         jButton3.setText("Update");
@@ -341,17 +386,16 @@ public class Worker_Entry extends javax.swing.JFrame {
                         .addGroup(layout.createSequentialGroup()
                             .addGap(312, 312, 312)
                             .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(104, 104, 104)
-                                .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(312, 312, 312)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(208, 208, 208)
-                                .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGroup(layout.createSequentialGroup()
+                            .addGap(104, 104, 104)
+                            .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createSequentialGroup()
+                            .addGap(312, 312, 312)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createSequentialGroup()
+                            .addGap(208, 208, 208)
+                            .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addContainerGap(384, Short.MAX_VALUE)))
         );
 
@@ -452,6 +496,48 @@ public class Worker_Entry extends javax.swing.JFrame {
         this.dispose();
         new Main_Page().setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+
+        try
+        {
+            String worker_id, worker_name, worker_mobileno, worker_address, worker_aadharno, worker_bloodgp, worker_DOB, worker_joindate, smt;
+            
+            worker_id = jTextField2.getText();
+            worker_name = jTextField4.getText();
+            worker_mobileno = jTextField6.getText();
+            worker_address = jTextArea1.getText();
+            worker_aadharno = jTextField8.getText();
+            worker_bloodgp = jComboBox1.getSelectedItem().toString();
+            worker_DOB = jComboBox4.getSelectedItem().toString() + "-" + jComboBox3.getSelectedItem().toString() + "-" + jComboBox2.getSelectedItem().toString();
+            worker_joindate = jLabel9.getText();
+
+            if(worker_id.length() == 0 || worker_name.length() == 0 || worker_mobileno.length() == 0 || worker_address.length() == 0 || worker_aadharno.length() == 0)
+            {
+                JOptionPane.showMessageDialog(null,"Enter all information","Data Missing",JOptionPane.ERROR_MESSAGE);
+            }
+            else
+            {
+                stat = (Statement) cn.createStatement();
+                smt = "insert into worker_entry values('"+worker_id+"', '"+worker_name+"', '"+worker_mobileno+"', '"+worker_address+"', '"+worker_aadharno+"', '"+worker_bloodgp+"', '"+worker_DOB+"', '"+worker_joindate+"')";
+                stat.executeUpdate(smt);
+                
+                JOptionPane.showMessageDialog(null, "Worker added Succesfully...");
+
+                this.dispose();
+                new Worker_Entry().setVisible(true);
+                
+            }
+            
+        }
+        catch(Exception e)
+        {
+            JOptionPane.showMessageDialog(null, e);
+        }
+
+
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments

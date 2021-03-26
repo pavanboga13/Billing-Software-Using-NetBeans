@@ -5,17 +5,43 @@
  */
 package billing.software;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author OM
  */
 public class Worker_Update extends javax.swing.JFrame {
-
+    Date d;
+    Connection cn;
+    Statement stat;
+    ResultSet rs;    
     /**
      * Creates new form Worker_Update
      */
     public Worker_Update() {
         initComponents();
+        
+        d = new java.util.Date();
+        jLabel9.setText(new SimpleDateFormat("yyyy-MM-dd").format(d));
+        
+        try{
+            Class.forName("com.mysql.jdbc.Driver");
+            cn = DriverManager.getConnection("jdbc:mysql://localhost:3306/billing_system","root","");
+        
+        }
+        catch(Exception e)
+        {
+            JOptionPane.showMessageDialog(null, e);
+        }
+        
+        
     }
 
     /**
@@ -376,6 +402,9 @@ public class Worker_Update extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField8ActionPerformed
 
     private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
+        
+
+
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField2ActionPerformed
 
@@ -398,12 +427,38 @@ public class Worker_Update extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField2KeyPressed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+String w_id = jTextField2.getText();
+        try
+        {
+            stat = cn.createStatement();
+            rs = stat.executeQuery("select * from worker_entry where worker_id = '"+w_id+"'");
+            
+            if(rs.next())
+            {
+                jTextField4.setText(rs.getString(2));        
+                jTextField6.setText(rs.getString(3));
+                jTextArea1.setText(rs.getString(4));
+                jTextField8.setText(rs.getString(5));
+                jTextField9.setText(rs.getString(6));
+                jTextField10.setText(rs.getString(7));
+            }
+            else
+            {
+                            JOptionPane.showMessageDialog(this, "Enter valid Worker Id", "Error",JOptionPane.QUESTION_MESSAGE);
+                jTextField2.setText(""); 
+                            jTextField4.setText("");        
+                jTextField6.setText("");
+                jTextArea1.setText("");
+                jTextField8.setText("");
+                jTextField9.setText("");
+                jTextField10.setText("");
+            }
 
-        // TODO add your handling code here:
-
-        String toSearch=jTextField2.getText().trim();
-        if(toSearch.length()==0)
-        JOptionPane.showMessageDialog(this, "Enter ID to be searched!", "Error", JOptionPane.QUESTION_MESSAGE);
+        }
+        catch(Exception e)
+        {
+            JOptionPane.showMessageDialog(null, e);
+        }
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jTextField4FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextField4FocusLost
